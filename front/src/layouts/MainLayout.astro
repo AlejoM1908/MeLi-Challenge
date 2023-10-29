@@ -1,0 +1,37 @@
+---
+import MainHead from './MainHead.astro'
+
+interface Props {
+  title?: string
+  description?: string
+}
+
+const {
+  title = 'AMCoding',
+  description = 'Personal portfolio and blog for Alejandro Melo (danielalejandro.mn19@gmail.com)',
+}: Props = Astro.props as Props
+---
+
+<html lang="en">
+  <MainHead title={title} description={description} />
+  <body class="bg-light dark:bg-dark w-full h-full">
+    <slot>
+      <div class="flex items-center justify-center h-screen">
+        <h1 class="text-4xl font-bold text-white">Welcome to AMCoding!</h1>
+      </div>
+    </slot>
+  </body>
+</html>
+
+<script is:inline>
+  const theme = (() => {
+    if (typeof localStorage !== 'undefined' && localStorage.getItem('theme')) return localStorage.getItem('theme');
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
+    return 'light';
+  })();
+
+  if (theme === 'light') document.documentElement.classList.remove('dark');
+  else document.documentElement.classList.add('dark');
+
+  window.localStorage.setItem('theme', theme);
+</script>
