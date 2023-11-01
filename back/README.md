@@ -29,6 +29,12 @@ For the .env file, you can use the following variables:
 
 - SECRET_KEY: A secret key for the application for security purposes. Obligatory.
 
+- MYSQL_HOST: The host of the MySQL database. Obligatory.
+- MYSQL_PORT: The port of the MySQL database. Default: 3306
+- MYSQL_USER: The user of the MySQL database. Obligatory.
+- MYSQL_PASSWORD: The password of the MySQL database. Optional if the database doesn't have a password.
+- MYSQL_DATABASE: The name of the MySQL database. Obligatory.
+
 ### Build and run with Docker
 To build the image, run the following command:
 ```bash
