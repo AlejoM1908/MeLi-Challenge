@@ -131,7 +131,7 @@ def register():
         return jsonify({"error": "Invalid request"}), HttpCodes.BAD_REQUEST.value
 
     register_result = registerUseCase(
-        current_app.config["REPOSITORY"], data["email"], data["password"], data["name"], role_id=data["role"] if "role" in data else 1
+        current_app.config["REPOSITORY"], data["email"], data["password"], data["name"]
     )
     if isinstance(register_result, str):
         return jsonify({"error": register_result}), HttpCodes.CONFLICT.value

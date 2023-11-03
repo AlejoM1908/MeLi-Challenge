@@ -1,14 +1,6 @@
-DROP SCHEMA IF EXISTS `risk_management`;
-CREATE SCHEMA `risk_management` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
+CREATE SCHEMA IF NOT EXISTS `risk_management` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ;
 
-DROP TABLE IF EXISTS `risk_management`.`user_role`;
-DROP TABLE IF EXISTS `risk_management`.`risk_user`;
-DROP TABLE IF EXISTS `risk_management`.`user`;
-DROP TABLE IF EXISTS `risk_management`.`role`;
-DROP TABLE IF EXISTS `risk_management`.`provider`;
-DROP TABLE IF EXISTS `risk_management`.`risk`;
-
-CREATE TABLE `risk_management`.`user` (
+CREATE TABLE IF NOT EXISTS `risk_management`.`user` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(255) NOT NULL,
     `hash` VARCHAR(255) NOT NULL,
@@ -20,7 +12,7 @@ CREATE TABLE `risk_management`.`user` (
     UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `risk_management`.`role` (
+CREATE TABLE IF NOT EXISTS `risk_management`.`role` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -29,7 +21,7 @@ CREATE TABLE `risk_management`.`role` (
     UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `risk_management`.`user_role` (
+CREATE TABLE IF NOT EXISTS `risk_management`.`user_role` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `user_id` INT NOT NULL,
     `role_id` INT NOT NULL,
@@ -40,7 +32,7 @@ CREATE TABLE `risk_management`.`user_role` (
     FOREIGN KEY (`role_id`) REFERENCES `role`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `risk_management`.`provider` (
+CREATE TABLE IF NOT EXISTS `risk_management`.`provider` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
     `description` VARCHAR(255) NOT NULL,
@@ -51,7 +43,7 @@ CREATE TABLE `risk_management`.`provider` (
     UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `risk_management`.`risk` (
+CREATE TABLE IF NOT EXISTS `risk_management`.`risk` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `provider_id` INT NULL,
     `name` VARCHAR(255) NOT NULL,
@@ -64,7 +56,7 @@ CREATE TABLE `risk_management`.`risk` (
     FOREIGN KEY (`provider_id`) REFERENCES `provider`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-CREATE TABLE `risk_management`.`risk_user` (
+CREATE TABLE IF NOT EXISTS `risk_management`.`risk_user` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `risk_id` INT NOT NULL,
     `user_id` INT NOT NULL,
@@ -73,4 +65,4 @@ CREATE TABLE `risk_management`.`risk_user` (
     FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
-INSERT INTO `risk_management`.`role` (`name`) VALUES ('ADMIN');
+INSERT IGNORE INTO `risk_management`.`role` (`name`) VALUES ('ADMIN');

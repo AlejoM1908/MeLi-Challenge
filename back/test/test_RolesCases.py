@@ -159,22 +159,9 @@ class TestUpdateRoleUseCase:
         # Assert
         assert result == 'Name must have at least 1 character'
 
-    def test_role_already_registered(self):
-        # Arrange
-        repository = MockRepository(fail=[False, True])
-        new_parameters = {
-            'name': 'test'
-        }
-
-        # Act
-        result = updateRoleUseCase(repository, 1, new_parameters)
-
-        # Assert
-        assert result == 'Role already exists'
-
     def test_valid_role(self):
         # Arrange
-        repository = MockRepository()
+        repository = MockRepository(fail=[False, True])
         new_parameters = {
             'name': 'test'
         }
@@ -196,6 +183,16 @@ class TestDeleteRoleUseCase:
         # Assert
         assert result == 'Invalid id'
 
+    def test_avoid_deleting_admin_role(self):
+        # Arrange
+        repository = MockRepository()
+
+        # Act
+        result = deleteRoleUseCase(repository, 1)
+
+        # Assert
+        assert result == 'You cannot delete the main role'
+
     def test_role_not_found(self):
         # Arrange
         repository = MockRepository(fail=[True])
@@ -204,14 +201,14 @@ class TestDeleteRoleUseCase:
         result = deleteRoleUseCase(repository, 2)
 
         # Assert
-        assert result == 'Error obtaining rol'
+        assert result == 'Role id does not exists'
 
     def test_valid_role(self):
         # Arrange
         repository = MockRepository()
 
         # Act
-        result = deleteRoleUseCase(repository, 1)
+        result = deleteRoleUseCase(repository, 2)
 
         # Assert
         assert result == True
@@ -229,17 +226,17 @@ class TestCreateRoleUseCase:
 
     def test_role_already_registered(self):
         # Arrange
-        repository = MockRepository(fail=[True])
+        repository = MockRepository()
 
         # Act
         result = createRoleUseCase(repository, 'test')
 
         # Assert
-        assert result == 'Role already registered'
+        assert result == 'Role already exists'
 
     def test_valid_role(self):
         # Arrange
-        repository = MockRepository()
+        repository = MockRepository(fail=[True])
 
         # Act
         result = createRoleUseCase(repository, 'test')

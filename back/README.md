@@ -33,8 +33,8 @@ For the .env file, you can use the following variables:
 - MYSQL_HOST: The host of the MySQL database. Obligatory.
 - MYSQL_PORT: The port of the MySQL database. Default: 3306
 - MYSQL_USER: The user of the MySQL database. Obligatory.
-- MYSQL_PASSWORD: The password of the MySQL database. Optional if the database doesn't have a password.
-- MYSQL_DATABASE: The name of the MySQL database. Obligatory.
+- MYSQL_PASS: The password of the MySQL database. Optional if the database doesn't have a password.
+- MYSQL_NAME: The name of the MySQL database. Obligatory.
 
 - COUNTRY_API_URL: The URL of the country API. Obligatory.
 
@@ -68,10 +68,67 @@ The project follows the principles of clean architectures, separating the applic
 - Entities: This layer is responsible for representing the entities of the application in a way that is easy to understand and manipulate.
 
 ## Endpoints
-Soon to be added.
+You can access all the endpoints with a Swagger UI in the following URL: FLASK_RUN_HOST:FLASK_RUN_PORT/swagger, or if you prefer runnig it with postman, in the root of the project you can find a file called MeLi Risk Management Challenge.postman_collection.json with all the endpoints to load to postman.
+
+## Authentication Endpoints
+
+| Endpoint | Description |
+| -------- | ----------- |
+| `/v1.1/login` | Login endpoint. Returns a JWT token and a refresh token. |
+| `/v1.1/refresh` | Refresh endpoint. Returns a new JWT token and a new refresh token. Requires a refresh token as a Cookie header. |
+| `/v1.1/register` | Register endpoint. Registers a new user. |
+
+## Provider Endpoints
+
+| Endpoint | Description |
+| -------- | ----------- |
+| `/v1.1/providers` | Providers endpoint. Supports GET and POST methods. Requires a JWT token as a Bearer Token header. |
+| `/v1.1/providers/<provider_id>` | Provider endpoint. Supports GET, PUT, and DELETE methods. Requires a JWT token as a Bearer Token header. |
+
+## Role Endpoints
+
+| Endpoint | Description |
+| -------- | ----------- |
+| `/v1.1/roles` | Roles endpoint. Supports GET and POST methods. Requires a JWT token as a Bearer Token header. |
+| `/v1.1/roles/<role_id>` | Role endpoint. Supports GET, PUT, and DELETE methods. Requires a JWT token as a Bearer Token header. |
+
+## Risk Endpoints
+
+| Endpoint | Description |
+| -------- | ----------- |
+| `/v1.1/risks` | Risks endpoint. Supports GET and POST methods. Requires a JWT token as a Bearer Token header. |
+| `/v1.1/risks/<risk_id>` | Risk endpoint. Supports GET, PUT, and DELETE methods. Requires a JWT token as a Bearer Token header. |
+
+## User Endpoints
+
+| Endpoint | Description |
+| -------- | ----------- |
+| `/v1.1/profile` | Profile endpoint. Returns all the info of the token user. Requires a JWT token as a Bearer Token header. |
+| `/v1.1/users/<user_id>/roles` | Gets all the roles of a user. Requires a JWT token as a Bearer Token header. |
+| `/v1.1/users/<user_id>/roles/<role_id>` | Adds or removes a role from a user. Requires a JWT token as a Bearer Token header. |
+| `/v1.1/risks/<risk_id>/users/<user_id>` | Adds or removes links between risks and users. Requires a JWT token as a Bearer Token header. |
+
+## Data Filtering
+
+The endpoint `/v1.1/risks` has a Query Parameter functionality that allows for single and multiple filters. The filters are:
+
+- `provider:<provider_id>` - Filter by provider id.
+- `user:<user_id>` - Filter by user id.
+- `probability:<probability>` - Filter by probability. Can be ['VERY_LOW', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH']
+- `impact:<impact>` - Filter by impact. Can be ['VERY_LOW', 'LOW', 'MEDIUM', 'HIGH', 'VERY_HIGH']
+- `<string>` - If the length is 3, query the country API for match, so filtering by country, else query the database for match in risks name or description.
+
+You can format the query parameters as you like, for example:
+- `/v1.1/risks?provider=1,user=1,probability=VERY_LOW,impact=VERY_LOW,arg`
+
 
 ## Testing
-Soon to be added.
+The automatic white box unit testing was developed with pytest. To run the tests, run the following command:
+
+```bash
+pytest
+```
+
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.

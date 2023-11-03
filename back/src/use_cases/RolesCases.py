@@ -107,7 +107,7 @@ def updateRoleUseCase(repository: Repository, role_id:int, new_parameters:dict[s
         role.name = new_parameters['name']
 
     # update the role
-    role = repository.updateRole(role)
+    return repository.updateRole(role)
 
 def deleteRoleUseCase(repository: Repository, role_id:int) -> Union[Role,str]:
     """
@@ -120,6 +120,10 @@ def deleteRoleUseCase(repository: Repository, role_id:int) -> Union[Role,str]:
     Returns:
         Union[Role,str]: Returns a error message or a role.
     """
+    # check if id is valid
+    if role_id < 1:
+        return 'Invalid id'
+
     # Avoid deleting the main role
     if role_id == 1:
         return 'You cannot delete the main role'
