@@ -42,7 +42,7 @@ class TestLoginUseCase:
         result = loginUseCase(MockRepository(fail=[False, True]), email, password)
 
         # Assert
-        assert result == 'Error al validar usuario'
+        assert result == 'The user cannot be validated'
 
     def test_valid_user(self):
         # Arrange

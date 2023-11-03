@@ -1,14 +1,17 @@
 from src.entities.Repositories import Repository
-from src.entities.User import User, Role
-from src.entities.Risk import Risk, Provider
+from src.entities.User import User
+from src.entities.Role import Role
+from src.entities.Risk import Risk
+from src.entities.Provider import Provider
 from datetime import datetime, timezone
 import bcrypt
 
 class MockRepository(Repository):
     pass
 
-    def __init__(self, fail: bool = None):
+    def __init__(self, fail: bool = None, empty: bool = False):
         self.fail = fail if fail is not None else []
+        self.empty = empty
 
         salt = bcrypt.gensalt(12)
         self.mock_user = User(
@@ -34,7 +37,7 @@ class MockRepository(Repository):
             impact= 'VERY_HIGH',
             created_at= datetime.now(tz= timezone.utc),
             updated_at= datetime.now(tz= timezone.utc),
-            user_id= 1
+            user_ids= [1]
         )
 
         self.mock_Provider = Provider(
@@ -57,106 +60,120 @@ class MockRepository(Repository):
         return True if not self._evaluateFail() else 'Error al crear usuario'
     
     def getUserById(self, id: int) -> User | str:
-        return self.mock_user if not self._evaluateFail() else 'Error al obtener usuario'
+        return self.mock_user if not self._evaluateFail() else 'Error obtaining user'
     
     def getUserById(self, id: int) -> User | str:
-        return self.mock_user if not self._evaluateFail() else 'Error al obtener usuario'
+        return self.mock_user if not self._evaluateFail() else 'Error obtaining user'
+    
+    def getUserWithRoles(self, id: int) -> User | str:
+        return self.mock_user if not self._evaluateFail() else 'Error obtaining user'
     
     def getUserByEmail(self, email: str) -> User | str:
-        return self.mock_user if not self._evaluateFail() else 'Error al obtener usuario'
+        return self.mock_user if not self._evaluateFail() else 'Error obtaining user'
     
     def getUsersByRole(self, role: str) -> list[User] | str:
-        return [self.mock_user] if not self._evaluateFail() else 'Error al obtener usuarios'
+        return [self.mock_user] if not self._evaluateFail() else 'Error obtaining users'
     
     def getAllUsers(self) -> list[User] | str:
-        return [self.mock_user] if not self._evaluateFail() else 'Error al obtener usuarios'
+        return [self.mock_user] if not self._evaluateFail() else 'Error obtaining users'
     
     def updateUserData(self, user: User) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al actualizar usuario'
+        return True if not self._evaluateFail() else 'Error updating user'
     
     def updateUserPassword(self, user: User) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al actualizar usuario'
+        return True if not self._evaluateFail() else 'Error updating user'
     
     def deleteUser(self, id: int) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al eliminar usuario'
+        return True if not self._evaluateFail() else 'Error deleting user'
     
     def validateUser(self, user: User) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al validar usuario'
+        return True if not self._evaluateFail() else 'The user cannot be validated'
     
     def linkRoleToUser(self, user_id: int, role_id: int) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al asignar rol'
+        return True if not self._evaluateFail() else 'Error asigning role to user'
     
     def unlinkRoleToUser(self, user_id: int, role_id: int) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al desasignar rol'
+        return True if not self._evaluateFail() else 'Error removing role to user'
+    
+    def getAllRoles(self) -> list[Role] | str:
+        if self._evaluateFail():
+            return 'Error obtaining roles'
+        elif self.empty:
+            return []
+        else:
+            return [self.mock_user.roles[0]]
     
     def createRole(self, name: str) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al crear rol'
+        return True if not self._evaluateFail() else 'Error creating rol'
     
     def getRoleById(self, id: int) -> Role | str:
-        return self.mock_user.roles[0] if not self._evaluateFail() else 'Error al obtener rol'
+        return self.mock_user.roles[0] if not self._evaluateFail() else 'Error obtaining rol'
+    
+    def getRoleByName(self, name: str) -> Role | str:
+        return self.mock_user.roles[0] if not self._evaluateFail() else 'Error obtaining rol'
     
     def updateRole(self, role: Role) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al actualizar rol'
+        return True if not self._evaluateFail() else 'Error updating rol'
     
     def deleteRole(self, id: int) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al eliminar rol'
+        return True if not self._evaluateFail() else 'Error deleting role'
     
     def createProvider(self, name: str, description: str, country: str) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al crear proveedor'
+        return True if not self._evaluateFail() else 'Error creating provider'
     
     def getProviderById(self, id: int) -> Provider | str:
-        return self.mock_Provider if not self._evaluateFail() else 'Error al obtener proveedor'
+        return self.mock_Provider if not self._evaluateFail() else 'the user couldn\'t be retrieved'
     
     def getProviderByName(self, name: str) -> Provider | str:
-        return self.mock_Provider if not self._evaluateFail() else 'Error al obtener proveedor'
+        return self.mock_Provider if not self._evaluateFail() else 'the user couldn\'t be retrieved'
     
     def getAllProviders(self) -> list[Provider] | str:
-        return [self.mock_Provider] if not self._evaluateFail() else 'Error al obtener proveedores'
+        return [self.mock_Provider] if not self._evaluateFail() else 'the users couldn\'t be retrieved'
     
     def updateProvider(self, provider: Provider) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al actualizar proveedor'
+        return True if not self._evaluateFail() else 'Error updating provider'
     
     def deleteProvider(self, id: int) -> bool | str:
         return True if not self._evaluateFail() else 'Error al eliminar proveedor'
     
     def createRisk(self, provider_id: int, name: str, description: str, probability: str, impact: str, user_id: int) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al crear riesgo'
+        return True if not self._evaluateFail() else 'Error creating risk'
     
     def getRiskById(self, id: int) -> Risk | str:
-        return self.mock_Risk if not self._evaluateFail() else 'Error al obtener riesgo'
+        return self.mock_Risk if not self._evaluateFail() else 'Error obtaining risk'
     
     def getRisksByString(self, string: str) -> list[Risk] | str:
-        return [self.mock_Risk] if not self._evaluateFail() else 'Error al obtener riesgos'
+        return [self.mock_Risk] if not self._evaluateFail() else 'Error obtaining risks'
     
     def getRisksByProbability(self, probability: str) -> list[Risk] | str:
-        return [self.mock_Risk] if not self._evaluateFail() else 'Error al obtener riesgos'
+        return [self.mock_Risk] if not self._evaluateFail() else 'Error obtaining risks'
     
     def getRisksByImpact(self, impact: str) -> list[Risk] | str:
-        return [self.mock_Risk] if not self._evaluateFail() else 'Error al obtener riesgos'
+        return [self.mock_Risk] if not self._evaluateFail() else 'Error obtaining risks'
     
     def getRisksByUser(self, user_id: int) -> list[Risk] | str:
-        return [self.mock_Risk] if not self._evaluateFail() else 'Error al obtener riesgos'
+        return [self.mock_Risk] if not self._evaluateFail() else 'Error obtaining risks'
     
     def getRisksByProvider(self, provider_id: int) -> list[Risk] | str:
-        return [self.mock_Risk] if not self._evaluateFail() else 'Error al obtener riesgos'
+        return [self.mock_Risk] if not self._evaluateFail() else 'Error obtaining risks'
     
     def getRisksByCountry(self, country: str) -> list[Risk] | str:
-        return [self.mock_Risk] if not self._evaluateFail() else 'Error al obtener riesgos'
+        return [self.mock_Risk] if not self._evaluateFail() else 'Error obtaining risks'
     
     def getAllRisks(self) -> list[Risk] | str:
-        return [self.mock_Risk] if not self._evaluateFail() else 'Error al obtener riesgos'
+        return [self.mock_Risk] if not self._evaluateFail() else 'Error obtaining risks'
     
     def getAllRisksWithUser(self) -> list[Risk] | str:
-        return [self.mock_Risk] if not self._evaluateFail() else 'Error al obtener riesgos'
+        return [self.mock_Risk] if not self._evaluateFail() else 'Error obtaining risks'
     
     def updateRisk(self, risk: Risk) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al actualizar riesgo'
+        return True if not self._evaluateFail() else 'Error updating risk'
     
     def deleteRisk(self, id: int) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al eliminar riesgo'
+        return True if not self._evaluateFail() else 'Error deleting risk'
     
     def relateRiskToUser(self, risk_id: int, user_id: int) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al relacionar riesgo con usuario'
+        return True if not self._evaluateFail() else 'Error relating risk with user'
     
     def unrelateRiskToUser(self, risk_id: int, user_id: int) -> bool | str:
-        return True if not self._evaluateFail() else 'Error al desrelacionar riesgo con usuario'
+        return True if not self._evaluateFail() else 'Error unrelating risk with user'

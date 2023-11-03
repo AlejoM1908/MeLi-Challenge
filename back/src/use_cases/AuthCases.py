@@ -67,11 +67,7 @@ def registerUseCase(repository: Repository, email:str, password:str, name:str) -
     if isinstance(operation, str):
         return operation
     
-    new_user = repository.getUserByEmail(email)
-    if isinstance(new_user, str):
-        return new_user
-    
-    operation = repository.linkRoleToUser(new_user.id, 1)
+    operation = repository.linkRoleToUser(operation, 1)
     if isinstance(operation, str):
         return operation
     

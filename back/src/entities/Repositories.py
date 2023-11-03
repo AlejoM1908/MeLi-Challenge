@@ -1,19 +1,13 @@
 from abc import ABC, abstractmethod
 from src.entities.User import User, Role
-from src.entities.Risk import Risk, Provider
-from enum import Enum
+from src.entities.Risk import Risk
+from src.entities.Provider import Provider
+from src.entities.Classification import Classification
 from typing import Union
-
-class Classification(Enum):
-    VERY_LOW = 'VERY_LOW'
-    LOW = 'LOW'
-    MEDIUM = 'MEDIUM'
-    HIGH = 'HIGH'
-    VERY_HIGH = 'VERY_HIGH'
 
 class Repository(ABC):
     @abstractmethod
-    def createUser(self, email: str, password: str, name: str) -> Union[bool,str]:
+    def createUser(self, email: str, password: str, name: str) -> Union[int,str]:
         pass
 
     @abstractmethod
@@ -22,6 +16,10 @@ class Repository(ABC):
 
     @abstractmethod
     def getUserByEmail(self, email: str) -> Union[User,str]:
+        pass
+
+    @abstractmethod
+    def getUserWithRoles(self, id: int) -> Union[User,str]:
         pass
 
     @abstractmethod
@@ -55,13 +53,21 @@ class Repository(ABC):
     @abstractmethod
     def unlinkRoleToUser(self, user_id: int, role_id: int) -> Union[bool,str]:
         pass
+    
+    @abstractmethod
+    def getAllRoles(self) -> Union[list[Role],str]:
+        pass
 
     @abstractmethod
-    def createRole(self, name: str) -> Union[bool,str]:
+    def createRole(self, name: str) -> Union[int,str]:
         pass
 
     @abstractmethod
     def getRoleById(self, id: int) -> Union[Role,str]:
+        pass
+
+    @abstractmethod
+    def getRoleByName(self, name: str) -> Union[Role,str]:
         pass
 
     @abstractmethod
@@ -73,15 +79,15 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def createProvider(self, name: str, description: str, country:str) -> Union[bool,str]:
+    def createProvider(self, name: str, description: str, country:str) -> Union[int,str]:
         pass
 
     @abstractmethod
-    def getProviderById(self, id: int) -> Union[str,str]:
+    def getProviderById(self, id: int) -> Union[str,Provider]:
         pass
 
     @abstractmethod
-    def getProviderByName(self, name: str) -> Union[str,str]:
+    def getProviderByName(self, name: str) -> Union[str,Provider]:
         pass
 
     @abstractmethod
@@ -97,7 +103,7 @@ class Repository(ABC):
         pass
 
     @abstractmethod
-    def createRisk(self, provider_id:int, name: str, description: str, probability: Classification, impact: Classification) -> Union[bool,str]:
+    def createRisk(self, provider_id:int, name: str, description: str, probability: Classification, impact: Classification) -> Union[int,str]:
         pass
 
     @abstractmethod

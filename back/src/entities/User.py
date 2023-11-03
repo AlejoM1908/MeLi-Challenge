@@ -1,23 +1,6 @@
 from dataclasses import dataclass
 from typing import Optional
-
-@dataclass
-class Role:
-    id: int
-    name: str
-    created_at: Optional[str] = None
-    updated_at: Optional[str] = None
-
-    def __str__(self) -> str:
-        return f'{self.id} - {self.name}'
-    
-    def asDict(self) -> dict:
-        return {
-            'id': self.id,
-            'name': self.name,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
-        }
+from src.entities.Role import Role
 
 @dataclass
 class User:
@@ -35,10 +18,4 @@ class User:
         return f'{self.id} - {self.email}{f" - {self.name}" if self.name is not None else ""}'
     
     def asDict(self) -> dict:
-        return {
-            'id': self.id,
-            'email': self.email,
-            'name': self.name,
-            'created_at': self.created_at,
-            'updated_at': self.updated_at
-        }
+        return {key:value for key, value in self.__dict__.items() if value is not None and key not in ['password', 'hashed_password', 'salt']}

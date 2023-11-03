@@ -1,4 +1,4 @@
-from src.entities.Risk import Provider
+from src.entities.Provider import Provider
 from src.entities.Repositories import Repository
 from src.gateways.CountryAPI import CountryAPI
 from typing import Union
@@ -35,14 +35,9 @@ def createProviderUseCase(repository:Repository, country_api:CountryAPI, name:st
         return 'Provider already registered'
     
     # create provider
-    operation = repository.createProvider(name, description, country_cca3)
+    return repository.createProvider(name, description, country_cca3)
 
-    if isinstance(operation, str):
-        return operation
-    
-    return True
-
-def updateProviderUseCase(repository:Repository, country_api:CountryAPI, id:int, name:str, description:str, country_cca3:str) -> Union[bool,str]:
+def updateProviderUseCase(repository:Repository, country_api:CountryAPI, id:int, new_parameters:dict[str,str]) -> Union[bool,str]:
     """
     Updates a provider in the provided repository.
 
@@ -56,34 +51,48 @@ def updateProviderUseCase(repository:Repository, country_api:CountryAPI, id:int,
     Returns:
         Union[bool,str]: Returns a error message or a true if provider is updated.
     """
-    # check if name is valid
-    if len(name) < 1:
-        return 'Name must have at least 1 character'
-
-    # check if description is valid
-    if len(description) < 1:
-        return 'Description must have at least 1 character'
-
-    # check if country is valid
-    country = country_api.getCountryByCCA3(country_cca3)
-    if isinstance(country, str):
-        return country
+    # check new parameters
+    if not new_parameters:
+        return 'No parameters to update provided'
     
-    # check if provider is already registered
+    # check if required parameters are provided
+    if 'name' not in new_parameters and 'description' not in new_parameters and 'country' not in new_parameters:
+        return 'No valid parameters to update provided'
+
+    # check if provider exists
     stored_provider = repository.getProviderById(id)
     if isinstance(stored_provider, str):
         return stored_provider
     
-    # update provider
-    stored_provider.name = name
-    stored_provider.description = description
-    stored_provider.country = country_cca3
-    operation = repository.updateProvider(stored_provider)
-
-    if isinstance(operation, str):
-        return operation
+    if 'name' in new_parameters: 
+        if len(new_parameters['name']) < 5:
+            return 'Name must have at least 5 characters'
+        
+        # check if provider name is already registered
+        query = repository.getProviderByName(new_parameters['name'])
+        if isinstance(query, Provider):
+            return 'The provider name is already registered'
+        
+        stored_provider.name = new_parameters['name']
     
-    return True
+    if 'description' in new_parameters: 
+        if len(new_parameters['description']) < 5:
+            return 'Description must have at least 5 characters'
+        
+        stored_provider.description = new_parameters['description']
+    
+    if 'country' in new_parameters: 
+        if len(new_parameters['country']) != 3:
+            return 'Country Code must have 3 characters'
+        
+        # check if country is valid
+        country = country_api.getCountryByCCA3(new_parameters['country'])
+        if isinstance(country, str):
+            return country
+        
+        stored_provider.country = new_parameters['country']
+    
+    return repository.updateProvider(stored_provider)
 
 def deleteProviderUseCase(repository:Repository, id:int) -> Union[bool,str]:
     """
@@ -102,12 +111,7 @@ def deleteProviderUseCase(repository:Repository, id:int) -> Union[bool,str]:
         return stored_provider
     
     # delete provider
-    operation = repository.deleteProvider(id)
-
-    if isinstance(operation, str):
-        return operation
-    
-    return True
+    return repository.deleteProvider(id)
 
 def getProviderByIdUseCase(repository:Repository, id:int) -> Union[Provider,str]:
     """
@@ -121,12 +125,21 @@ def getProviderByIdUseCase(repository:Repository, id:int) -> Union[Provider,str]
         Union[Provider,str]: Returns a error message or a provider.
     """
     # get provider
-    provider = repository.getProviderById(id)
+    return repository.getProviderById(id)
 
-    if isinstance(provider, str):
-        return provider
-    
-    return provider
+def getProviderByNameUseCase(repository:Repository, name:str) -> Union[Provider,str]:
+    """
+    Gets a provider by name in the provided repository.
+
+    Parameters:
+        repository (Repository): The repository to get the provider.
+        name (str): The name to get.
+
+    Returns:
+        Union[Provider,str]: Returns a error message or a provider.
+    """
+    # get provider
+    return repository.getProviderByName(name)
 
 def getProvidersUseCase(repository:Repository) -> Union[list[Provider],str]:
     """
@@ -139,9 +152,4 @@ def getProvidersUseCase(repository:Repository) -> Union[list[Provider],str]:
         Union[list[Provider],str]: Returns a error message or a list of providers.
     """
     # get providers
-    providers = repository.getAllProviders()
-
-    if isinstance(providers, str):
-        return providers
-    
-    return providers
+    return repository.getAllProviders()
