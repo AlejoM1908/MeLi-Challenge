@@ -1,4 +1,4 @@
-import { ThemeToggle } from './ThemeToogle'
+import { ThemeToggle } from './ThemeToggle'
 
 interface NotFoundProps {
   homePath: string
@@ -18,7 +18,7 @@ export function NotFound({ homePath, className }: NotFoundProps): JSX.Element {
           404
         </h1>
 
-        <p className="text-2xl font-bold tracking-tight text-pr-accent sm:text-4xl">
+        <p className="text-2xl font-bold tracking-tight text-th-accent sm:text-4xl">
           Uh-oh!
         </p>
 
@@ -28,7 +28,7 @@ export function NotFound({ homePath, className }: NotFoundProps): JSX.Element {
 
         <a
           href={homePath}
-          className="inline-block px-5 py-3 mt-6 text-sm font-medium text-white bg-pr-accent rounded hover:bg-pr-muted focus:outline-none focus:ring"
+          className="inline-block px-5 py-3 mt-6 text-sm font-medium text-white bg-th-accent rounded hover:bg-th-muted focus:outline-none focus:ring"
         >
           {' '}
           Go Back Home
