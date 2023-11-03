@@ -1,0 +1,8 @@
+---
+import { NotFound } from '../components/atoms/NotFound'
+import MainLayout from '../layouts/MainLayout.astro'
+---
+
+<MainLayout title="Error">
+  <NotFound homePath="/" client:load/>
+</MainLayout>

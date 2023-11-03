@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:latest
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: risk_management
+    networks:
+      - backend
+
+  app:
+    build: ./back
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+    depends_on:
+      - db
+    networks:
+      - backend
+
+networks:
+  backend:
+    name: backend

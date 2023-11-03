@@ -1,0 +1,10 @@
+---
+import { LoginForm } from '../components/molecules/LoginForm';
+import MainLayout from '../layouts/MainLayout.astro';
+
+const endpoint = process.env.API_URL;
+---
+
+<MainLayout title="Login">
+    <LoginForm button_text='Login' endpoint={endpoint}/>
+</MainLayout>
